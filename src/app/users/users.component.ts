@@ -7,9 +7,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UsersComponent implements OnInit {
 
-  constructor() { }
+  public users$: Observable<User[]>;
+  public  usersLoading: Observable<boolean>;
 
-  ngOnInit(): void {
+  constructor(private router: Router, private store: Store<AppState>) {
+    this.users$ = store
+      .pipe(select(selectUserListEntitiesConverted$));
+
+    this.usersLoading = store.pipe(select(selectUsersLoading$));
+  }
+
+  ngOnInit() {
+    this.store.dispatch(new  UserListModule.LoadInitUsers());
+  }
+
+  goToAddUser () {
+    this.router.navigateByUrl('/ajout-user');
+  }
+
+  deleteUser(id: number) {
+    this.store.dispatch(new UserListModule.LoadDeleteUser(id));
   }
 
 }
